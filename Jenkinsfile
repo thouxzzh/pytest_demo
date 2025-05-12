@@ -24,13 +24,11 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                script {
-                    // Run pytest and show results
-                    sh '''#!/bin/bash
-                        . venv/bin/activate
-                        pytest --maxfail=1 --disable-warnings -q
-                    '''
-                }
+                // Run the tests using the batch command on Windows
+                bat '''#!/bin/bash
+                    . venv/Scripts/activate
+                    pytest
+                '''
             }
         }
     }
