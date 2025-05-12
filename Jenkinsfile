@@ -14,9 +14,9 @@ pipeline {
             steps {
                 script {
                     // Install Python dependencies from requirements.txt
-                    sh '''#!/bin/bash
+                    bat '''
                         ${PYTHON_ENV} -m venv venv
-                        . venv/bin/activate
+                        .\\venv\\Scripts\\activate
                         pip install -r requirements.txt
                     '''
                 }
@@ -24,11 +24,7 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                // Run the tests using the batch command on Windows
-                bat '''#!/bin/bash
-                    . venv/Scripts/activate
-                    pytest
-                '''
+                bat 'pytest'  // Use batch command on Windows
             }
         }
     }
