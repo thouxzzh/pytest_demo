@@ -1,38 +1,37 @@
 pipeline {
     agent any
+
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
+                deleteDir() 
                 git branch: 'main', url: 'https://github.com/thouxzzh/pytest_demo.git'
             }
         }
+
         stage('Install Dependencies') {
             steps {
                 bat '''
-                    python -m venv venv
-                    call venv\\Scripts\\activate
-                    pip install -r requirements.txt
+                echo Installing required packages...
+                python -m pip install --upgrade pip
+                python -m pip install selenium pytest
                 '''
             }
         }
+
         stage('Run Tests') {
             steps {
                 bat '''
-                    call venv\\Scripts\\activate
-                    pytest
+                echo Running tests...
+                python -m pytest --maxfail=5 --disable-warnings --junitxml=results.xml
                 '''
             }
         }
-    }
-    post {
-        always {
-            cleanWs()
-        }
-        success {
-            echo 'Build and tests were successful!'
-        }
-        failure {
-            echo 'Build failed!'
+
+       stage('Publish Results') {
+            steps {
+                junit 'results.xml'
+                            }
         }
     }
 }
